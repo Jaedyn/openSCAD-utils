@@ -20,7 +20,16 @@ function y_sphere_radians(r=1,theta=0,phi=0) = y_sphere_degrees(r,radians_to_deg
 function z_sphere_radians(r=1,theta=0) = z_sphere_degrees(r,radians_to_degrees(theta));
 
 
+// testing coordinate transformation by generating a list of points along a spherical surface and then plotting cubes at those points.
+// note: OpenSCAD doesn't like trying to render too many elements using a single list of points. Successful renders were achieved with a list of up to 9,800 points in a single list
+// Splitting your list into two separate lists, and then two for() loops that plot the cubes doesn't result in an error for a test case that generates ~18,000 points split across two ~9,000 point lists.
 
+surfacePoints = [for(theta = [0:4.5:360], phi = [0:3:360]) [x_sphere_degrees(1,theta,phi),y_sphere_degrees(1,theta,phi),z_sphere_degrees(1,theta)]];
+surfacePoints2 = [for(theta = [0:6:360], phi = [0:3.1:360]) [x_sphere_degrees(1,theta,phi),y_sphere_degrees(1,theta,phi),z_sphere_degrees(1,theta)]];
+color("blue")
+for(i = [0:1:len(surfacePoints)-1]) {translate(surfacePoints[i]) cube(0.01);}
+color("green")
+for(i = [0:1:len(surfacePoints2)-1]) {translate(surfacePoints2[i]) cube(0.01);}
 
 //general surface for constructing a polyhedron from a parametrically defined 3D surface that may or may not be closed.
 module polysurface(){
