@@ -2,3 +2,4 @@
 
 cube(10);
 circle(5);
+square(5);
