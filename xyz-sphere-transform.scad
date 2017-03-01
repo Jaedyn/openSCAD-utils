@@ -1,7 +1,7 @@
-// plot a set of 3D points using cubes of adustable sidelength
-module list_plot(points,cube_size=0.01){
-    for(i = [0:1:len(points)-1]) {translate(points[i]) cube(cube_size);}
-}
+/*
+xyz-sphere-transform.scad
+library defining functions for coordinate transformations from spherical (r, theta, phi) to cartesian (x,y,z)
+*/
 
 // reverse the canonical order of elements in a vector
 function reverse_order(vector) = [for(i=[0:1:len(vector)-1]) vector[len(vector)-i-1]];
@@ -29,30 +29,13 @@ function radians_to_degrees(radians=0) = (radians/(2*PI()))*360;
 function x_sphere_degrees(r=1,theta=0,phi=0) = r*cos(phi)*sin(theta); 
 function y_sphere_degrees(r=1,theta=0,phi=0) = r*sin(phi)*sin(theta); 
 function z_sphere_degrees(r=1,theta=0) = r*cos(theta);
-function xyz_from_sphere(r=1,theta=0,phi=0) = [x_sphere_degrees(r,theta,phi), y_sphere_degrees(r,theta,phi), z_sphere_degrees(r,theta)];
+function xyz_from_sphere_degrees(r=1,theta=0,phi=0) = [x_sphere_degrees(r,theta,phi), y_sphere_degrees(r,theta,phi), z_sphere_degrees(r,theta)];
 
 // *_sphere_radians functions take angle arguments in radians and convert to degrees - since OpenSCAD's trig functions only take angle arguments as degrees
 function x_sphere_radians(r=1,theta=0,phi=0) = x_sphere_degrees(r,radians_to_degrees(theta),radians_to_degrees(phi));
 function y_sphere_radians(r=1,theta=0,phi=0) = y_sphere_degrees(r,radians_to_degrees(theta),radians_to_degrees(phi));
 function z_sphere_radians(r=1,theta=0) = z_sphere_degrees(r,radians_to_degrees(theta));
-
-// random_sphere_point() generates a pseudo-random point lying on a sphere of non-random radius "r"
-function random_sphere_point(r=1) = xyz_from_sphere(r,theta=rands(0,180,1)[0],phi=rands(0,360,1)[0]);
-
-// randomSpherePoints() generates "n" pseudo-random points lying on a sphere of "r" radius
-function randomSpherePoints(n=1, r=1) = [for(i=[1:1:n]) random_sphere_point(r)];
-
-// canonical_order_faces() generates a set of vectors defining triangular faces from a set of 3D points that is based on the canonical order of those points
-function canonical_order_faces(points) = [for(i = [0:1:len(points)-2]) [i, i+1, i+2]];
-
-randpoints = randomSpherePoints(9999);
-list_plot(randpoints,0.01);
-//polyhedron(points = randpoints, faces = canonical_order_faces(randpoints));
-
-
-
-// time to figure out if I can generate face-vector sets according to a nearest-neighbor-search (NNS) algorithm.
-// this type of problem can be solved in linear time for a constant set of dimensions. Search time grows exponentially with increasing dimensions.
+function xyz_from_sphere_radians(r=1,theta=0,phi=0) = [x_sphere_radians(r,theta,phi), y_sphere_radians(r,theta,phi), z_sphere_radians(r,theta)];
 
 //------------------------------------------------------------------------------------------
 // Test code for creating an evenly spaced set of points in a spherical coordinate system. 
@@ -68,12 +51,9 @@ list_plot(randpoints,0.01);
 //slice1 = [for(i = [0:len(theta_index):len(theta_index)*len(phi_index)]) surfacePoints[i]];
 //slice2 = reverse_order([for(i = [0:len(theta_index):len(theta_index)*len(phi_index)]) surfacePoints[i+1]]);
 //
-// Lots of random points on a sphere (just a test of the function)
-//for(i = [1:1:5000]) {translate(random_sphere_point(r=1)) cube(0.001);}
-//
 // Plot of surface points that were evenly generated over a sphere using the theta, phi indices
 //color("green")
 //for(i = [0:1:len(surfacePoints)-1]) {translate(surfacePoints[i]) cube(0.001);}
 //
 //color("green")
-//list_plot(slice1,0.01);
+//list_plot3D(slice1,0.01);
